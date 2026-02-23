@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Retos del Ecosistema Creativo</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- (Opcional) Google Analytics 4: reemplaza G-XXXXXXXXX por tu Measurement ID y descomenta -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config','G-XXXXXXXXX');
+  </script>
+  -->
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__content">
+      <h1>Retos del Ecosistema Creativo</h1>
+      <p>Participa, crea, conecta y escala rangos: BRONCE → PLATA → ORO → PLATINO → DIAMANTE → LEYENDA</p>
+      <a class="btn" href="#centro-retos">Ver retos</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- PERFIL (local, por ahora) -->
+    <section class="card">
+      <h2>Tu progreso</h2>
+      <div class="perfil">
+        <div class="perfil__badge">
+          <img id="nivelBadge" class="badge-glow" src="assets/badges/BRONCE.svg" alt="Badge BRONCE" />
+        </div>
+        <div class="perfil__info">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" type="text" placeholder="Escribe tu nombre" />
+          <div class="stats">
+            <div>Puntos: <strong id="puntos">0</strong></div>
+            <div>Nivel: <strong id="nivelNombre">BRONCE</strong></div>
+            <div>Racha (semanas): <strong id="racha">0</strong></div>
+          </div>
+          <button id="guardarPerfil" class="btn btn-secondary">Guardar perfil local</button>
+          <p class="nota">*Sin servidor todavía: la información se guarda en tu navegador (localStorage).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEADERBOARD (demo) -->
+    <section class="card">
+      <h2>Tabla de posiciones</h2>
+      <ol id="leaderboard" class="leaderboard"></ol>
+      <p class="nota">*Ejemplo de datos locales. En producción, puedes alimentar este ranking desde una hoja (CSV/JSON) o formulario moderado.</p>
+    </section>
+
+    <!-- CENTRO DE RETOS -->
+    <section id="centro-retos" class="card">
+      <h2>Centro de Retos</h2>
+      <div id="retos" class="retos"></div>
+      <div class="nota">
+        Evidencia sugerida (temporal): enlace público a tu publicación o captura (URL).<br />
+        Añádela en el campo del reto y pulsa <em>“Marcar como realizado”</em>.
+      </div>
+    </section>
+
+    <!-- GALERÍA COMUNITARIA (simple) -->
+    <section class="card">
+      <h2>Galería comunitaria</h2>
+      <div id="galeria" class="galeria"></div>
+      <p class="nota">*Muestra las últimas evidencias compartidas por participantes (URLs validadas localmente).</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>© Ecosistema Creativo — Programa de retos competitivos (BRONCE → LEYENDA)</small>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
