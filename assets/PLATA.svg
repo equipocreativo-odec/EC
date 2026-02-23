@@ -1,0 +1,11 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#e6e6e6"/>
+      <stop offset="100%" stop-color="#aeb7c2"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <rect x="40" y="40" width="176" height="176" rx="28" fill="url(#g)" stroke="#b7c7ff" stroke-width="4" filter="url(#glow)"/>
+  <text x="50%" y="52%" text-anchor="middle" fill="#ffffff" font-size="28" font-family="Segoe UI, Roboto" font-weight="800">PLATA</text>
+</svg>

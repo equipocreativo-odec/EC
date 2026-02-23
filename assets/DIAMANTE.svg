@@ -1,0 +1,11 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#73f3ff"/>
+      <stop offset="100%" stop-color="#00aaff"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8"/></filter>
+  </defs>
+  <path d="M32,96 L96,32 L160,32 L224,96 L128,224 Z" fill="url(#g)" stroke="#b9f7ff" stroke-width="4" filter="url(#glow)"/>
+  <text x="50%" y="62%" text-anchor="middle" fill="#eaffff" font-size="24" font-family="Segoe UI, Roboto" font-weight="900">DIAMANTE</text>
+</svg>

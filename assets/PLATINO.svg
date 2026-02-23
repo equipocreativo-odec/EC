@@ -1,0 +1,11 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#00e0c6"/>
+      <stop offset="100%" stop-color="#86fff2"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7"/></filter>
+  </defs>
+  <polygon points="128,30 210,78 210,178 128,226 46,178 46,78" fill="url(#g)" stroke="#9affff" stroke-width="4" filter="url(#glow)"/>
+  <text x="50%" y="54%" text-anchor="middle" fill="#012" font-size="26" font-family="Segoe UI, Roboto" font-weight="900">PLATINO</text>
+</svg>
