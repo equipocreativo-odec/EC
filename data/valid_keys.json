@@ -1,0 +1,17 @@
+{
+  "EC-7421": {
+    "retoId": "R1",
+    "puntos": 20,
+    "meta": "Evento presencial validado"
+  },
+  "VISITA-ARTE-9922": {
+    "retoId": "R2",
+    "puntos": 50,
+    "meta": "Video semanal revisado"
+  },
+  "INVITAR-3-OK44": {
+    "retoId": "R3",
+    "puntos": 100,
+    "meta": "3 invitados confirmados"
+  }
+}
