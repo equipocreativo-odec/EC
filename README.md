@@ -1,39 +1,59 @@
-# Retos del Ecosistema Creativo — Validación por clave (sin servidor)
+# Retos del Ecosistema Creativo — Claves con bloqueo global (Apps Script)
 
-Esta versión permite que un **verificador humano** entregue una **clave** (token). Cuando el participante la ingresa, **recibe puntos y avanza de nivel**.
+Este paquete integra **validación de claves** con un **Web App de Google Apps Script** y una **Hoja de Google** para:
 
-## Estructura
-- `index.html` — interfaz con sección "Validación de reto con clave".
-- `app.js` — lógica de niveles y validación de claves contra `data/valid_keys.json`.
-- `data/valid_keys.json` — listado de claves válidas (edítalo para tu operación real).
-- `data/retos.json` — catálogo de retos (informativo en esta versión).
-- `assets/badges/*.svg` — insignias BRONCE → LEYENDA.
+- Validar claves únicas y **marcarlas como usadas** (bloqueo global).
+- Acreditar puntos a la persona.
+- Registrar en `Evidencias`.
+- Mantener `Leaderboard` con suma incremental.
+- (Opcional) Publicar `Leaderboard` como **CSV** y consumirlo en el frontend.
 
-## Cómo usar
-1. **Sube** todo a tu repo y activa **GitHub Pages**.
-2. Entrega **claves** a los participantes (por evento, reto o persona).
-3. Ellos ingresan la clave en la web y, si es válida, **reciben puntos**.
+## 1) Preparar la Hoja de Google
+1. Crea un Spreadsheet y copia su **ID** (lo verás en la URL).
+2. Crea 3 pestañas con estos nombres exactos:
+   - `Keys` (cabeceras fila 1): `key, retoId, puntos, meta, usado_por, usado_fecha`
+   - `Evidencias` (cabeceras fila 1): `timestamp, nombre, retoId, puntos, meta`
+   - `Leaderboard` (cabeceras fila 1): `nombre, puntos`
+3. Agrega algunas **claves** de prueba en `Keys`.
 
-## Cómo administrar claves
-- Edita `data/valid_keys.json` y publica. Ejemplo:
-```json
-{
-  "EC-7421": { "retoId": "R1", "puntos": 20, "meta": "Evento" },
-  "VISITA-ARTE-9922": { "retoId": "R2", "puntos": 50, "meta": "Video" }
-}
+## 2) Desplegar el Web App en Apps Script
+1. En la misma hoja: **Extensiones → Apps Script**.
+2. Crea el archivo `apps-script-keys.gs` y pega el contenido de `server/apps-script-keys.gs`.
+3. Cambia `SHEET_ID` por el ID de tu hoja. Si deseas, define `SHARED_TOKEN`.
+4. **Deploy → New deployment → Type: Web app**.
+   - Execute as: **Me**
+   - Who has access: **Anyone**
+   - Copia la URL que termina en **/exec**.
+
+> Si tras cambios no ves efecto en `/exec`, recuerda **publicar una nueva versión** del Web App. 
+
+## 3) Configurar el frontend
+Edita `app.js`:
+```js
+const APPS_SCRIPT_KEYS_ENDPOINT = 'https://script.google.com/macros/s/XXX/exec';
+const SHARED_TOKEN = 'opcional_mi_token'; // igual al del backend si lo usas
 ```
-- **Nota:** En modo estático, la misma clave podría reutilizarse por distintos usuarios. El sistema **evita que la misma persona la use dos veces** en el mismo dispositivo (con `usedKeys` en `localStorage`). Si necesitas **bloquear reutilización global**, usa la variante con **Apps Script** para marcar clave como usada en una hoja.
 
-## Evolución a control total (opcional)
-- Conéctalo a un **Web App de Google Apps Script** para:
-  - Validar la clave contra una hoja y marcarla como **usada**.
-  - Registrar quién la canjeó (nombre, fecha, reto, puntos).
-  - Exponer un **CSV** resumido para el leaderboard.
+## 4) (Opcional) Leaderboard global
+- Publica la pestaña `Leaderboard` como **CSV**: en la hoja, `Archivo → Compartir → Publicar en la web` y elige formato CSV. Copia la URL y pégala en `app.js`:
+```js
+const LEADERBOARD_CSV_URL = 'https://docs.google.com/spreadsheets/d/ID/pub?output=csv';
+```
 
-## Personalización
-- Ajusta los umbrales de niveles en `app.js` → `LEVELS`.
-- Ajusta los puntos por tipo de reto (si los usas) en `PUNTOS`.
-- Cambia el estilo en `styles.css`.
+## 5) Flujo de uso
+- Un verificador entrega una **clave**.
+- El/la joven la digita y pulsa **Validar y acreditar puntos**.
+- El backend verifica que exista y no esté usada, acredita puntos y **marca la clave**.
+- El frontend actualiza el progreso local y puede refrescar el leaderboard global.
 
-## Privacidad
-- Esta versión no envía datos a servidores; todo se guarda **localmente** en el navegador.
+## 6) GitHub Pages
+- Sube todo el contenido a tu repositorio y publica con **GitHub Pages** (fuente: rama `main` o carpeta `/docs`).
+
+---
+
+### Estructura del paquete
+- `index.html`, `styles.css`, `app.js`
+- `assets/badges/*.svg` – insignias BRONCE → LEYENDA
+- `server/apps-script-keys.gs` – backend Apps Script
+- `README.md` – esta guía
+

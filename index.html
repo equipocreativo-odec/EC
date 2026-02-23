@@ -32,39 +32,38 @@
             <div>Racha (semanas): <strong id="racha">0</strong></div>
           </div>
           <button id="guardarPerfil" class="btn btn-secondary">Guardar perfil local</button>
-          <p class="nota">*La información se guarda en tu navegador (localStorage).</p>
+          <p class="nota">*Tus datos se guardan en este dispositivo (localStorage). Para ranking global, activa la conexión a hoja.</p>
         </div>
       </div>
     </section>
 
-    <!-- LEADERBOARD (demo) -->
+    <!-- LEADERBOARD (global si LEADERBOARD_CSV_URL está configurado) -->
     <section class="card">
       <h2>Tabla de posiciones</h2>
       <ol id="leaderboard" class="leaderboard"></ol>
-      <p class="nota">*Datos locales de ejemplo. Para ranking global, conéctalo a una hoja/API.</p>
+      <p class="nota">Si no se configuró un CSV público, verás datos locales de ejemplo.</p>
     </section>
 
-    <!-- CENTRO DE RETOS -->
+    <!-- CENTRO DE RETOS (informativo) -->
     <section id="centro-retos" class="card">
       <h2>Centro de Retos</h2>
       <div id="retos" class="retos"></div>
     </section>
 
-    <!-- VALIDACIÓN POR CLAVE -->
+    <!-- VALIDACIÓN POR CLAVE (servidor) -->
     <section class="card">
       <h2>Validación de reto con clave</h2>
       <div class="clave">
-        <input id="claveReto" type="text" placeholder="Ingresa la clave entregada por el verificador" />
-        <button id="validarClave" class="btn btn-secondary">Validar clave</button>
+        <input id="claveReto" type="text" placeholder="Clave entregada por el verificador" />
+        <button id="validarClave" class="btn btn-secondary">Validar y acreditar puntos</button>
       </div>
-      <p class="nota">Un verificador autorizado te entregará una clave única. Si es correcta, sumas puntos y avanzas de nivel.</p>
+      <p class="nota">Requiere que el coordinador haya configurado el endpoint Apps Script y las hojas <em>Keys</em>, <em>Evidencias</em> y <em>Leaderboard</em>.</p>
     </section>
 
-    <!-- GALERÍA COMUNITARIA -->
+    <!-- GALERÍA COMUNITARIA (local) -->
     <section class="card">
-      <h2>Galería comunitaria</h2>
+      <h2>Galería de validaciones</h2>
       <div id="galeria" class="galeria"></div>
-      <p class="nota">*Últimos logros validados en tu dispositivo.</p>
     </section>
   </main>
 
