@@ -1,0 +1,23 @@
+[
+  {
+    "id": "R1",
+    "titulo": "Difusión diaria de evento",
+    "tipo": "diario",
+    "puntos": 20,
+    "descripcion": "Comparte una historia o publicación del Ecosistema Creativo."
+  },
+  {
+    "id": "R2",
+    "titulo": "Video semanal sobre iniciativa",
+    "tipo": "semanal",
+    "puntos": 50,
+    "descripcion": "Crea un Reel/TikTok/Short sobre una iniciativa del ecosistema."
+  },
+  {
+    "id": "R3",
+    "titulo": "Invitar a 3 nuevos participantes",
+    "tipo": "logro",
+    "puntos": 100,
+    "descripcion": "Suma 3 jóvenes al programa y sube evidencia."
+  }
+]
