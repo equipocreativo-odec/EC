@@ -1,38 +1,39 @@
-# Retos del Ecosistema Creativo — Sitio estático
+# Retos del Ecosistema Creativo — Validación por clave (sin servidor)
 
-Este paquete contiene una app estática para el programa de gamificación (niveles BRONCE → LEYENDA) lista para publicarse en **GitHub Pages**.
+Esta versión permite que un **verificador humano** entregue una **clave** (token). Cuando el participante la ingresa, **recibe puntos y avanza de nivel**.
 
-## Cómo publicar en GitHub Pages
+## Estructura
+- `index.html` — interfaz con sección "Validación de reto con clave".
+- `app.js` — lógica de niveles y validación de claves contra `data/valid_keys.json`.
+- `data/valid_keys.json` — listado de claves válidas (edítalo para tu operación real).
+- `data/retos.json` — catálogo de retos (informativo en esta versión).
+- `assets/badges/*.svg` — insignias BRONCE → LEYENDA.
 
-1. Crea un repositorio (por ejemplo, `retos-ecosistema`) y sube todos los archivos.
-2. En GitHub, ve a **Settings → Pages** y elige la fuente de publicación:
-   - `main / root` (si `index.html` está en la raíz)
-   - o `main /docs` (si mueves todo dentro de la carpeta `docs/`).
-3. Guarda y espera la URL pública (`https://usuario.github.io/retos-ecosistema/`).
+## Cómo usar
+1. **Sube** todo a tu repo y activa **GitHub Pages**.
+2. Entrega **claves** a los participantes (por evento, reto o persona).
+3. Ellos ingresan la clave en la web y, si es válida, **reciben puntos**.
 
-> GitHub Pages busca un archivo de entrada como `index.html` en la fuente configurada y permite publicar desde `/docs`. Revisa la documentación oficial para más detalles.
-
-## Insertar en otro sitio
-
-Usa un `<iframe>` donde quieras mostrarlo:
-
-```html
-<iframe src="https://TU_USUARIO.github.io/retos-ecosistema/" style="width:100%;height:100vh;border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+## Cómo administrar claves
+- Edita `data/valid_keys.json` y publica. Ejemplo:
+```json
+{
+  "EC-7421": { "retoId": "R1", "puntos": 20, "meta": "Evento" },
+  "VISITA-ARTE-9922": { "retoId": "R2", "puntos": 50, "meta": "Video" }
+}
 ```
+- **Nota:** En modo estático, la misma clave podría reutilizarse por distintos usuarios. El sistema **evita que la misma persona la use dos veces** en el mismo dispositivo (con `usedKeys` en `localStorage`). Si necesitas **bloquear reutilización global**, usa la variante con **Apps Script** para marcar clave como usada en una hoja.
 
-## Activar analítica (opcional)
+## Evolución a control total (opcional)
+- Conéctalo a un **Web App de Google Apps Script** para:
+  - Validar la clave contra una hoja y marcarla como **usada**.
+  - Registrar quién la canjeó (nombre, fecha, reto, puntos).
+  - Exponer un **CSV** resumido para el leaderboard.
 
-1. Crea una propiedad GA4 y obtén tu **Measurement ID** (formato `G-XXXX...`).
-2. En `index.html` descomenta el bloque del Google tag, reemplaza el ID y publica.
+## Personalización
+- Ajusta los umbrales de niveles en `app.js` → `LEVELS`.
+- Ajusta los puntos por tipo de reto (si los usas) en `PUNTOS`.
+- Cambia el estilo en `styles.css`.
 
-## Personalización rápida
-
-- Ajusta los rangos en `app.js` (constante `LEVELS`).
-- Cambia puntajes por tipo de reto en `app.js` (`PUNTOS`).
-- Edita/añade retos en `data/retos.json`.
-- Reemplaza los SVG de `assets/badges/` si quieres otro estilo.
-
-## Notas
-
-- Todo se almacena **localmente** en el navegador (sin backend). Para moderación y leaderboard global, conéctalo a un formulario/hoja o una API.
-- Los estilos usan la paleta Neón + Gaming + toque Caribe.
+## Privacidad
+- Esta versión no envía datos a servidores; todo se guarda **localmente** en el navegador.

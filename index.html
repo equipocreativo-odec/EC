@@ -5,16 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Retos del Ecosistema Creativo</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- (Opcional) Google Analytics 4: reemplaza G-XXXXXXXXX por tu Measurement ID y descomenta -->
-  <!--
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config','G-XXXXXXXXX');
-  </script>
-  -->
 </head>
 <body>
   <header class="hero">
@@ -26,7 +16,7 @@
   </header>
 
   <main class="container">
-    <!-- PERFIL (local, por ahora) -->
+    <!-- PERFIL -->
     <section class="card">
       <h2>Tu progreso</h2>
       <div class="perfil">
@@ -42,7 +32,7 @@
             <div>Racha (semanas): <strong id="racha">0</strong></div>
           </div>
           <button id="guardarPerfil" class="btn btn-secondary">Guardar perfil local</button>
-          <p class="nota">*Sin servidor todavía: la información se guarda en tu navegador (localStorage).</p>
+          <p class="nota">*La información se guarda en tu navegador (localStorage).</p>
         </div>
       </div>
     </section>
@@ -51,24 +41,30 @@
     <section class="card">
       <h2>Tabla de posiciones</h2>
       <ol id="leaderboard" class="leaderboard"></ol>
-      <p class="nota">*Ejemplo de datos locales. En producción, puedes alimentar este ranking desde una hoja (CSV/JSON) o formulario moderado.</p>
+      <p class="nota">*Datos locales de ejemplo. Para ranking global, conéctalo a una hoja/API.</p>
     </section>
 
     <!-- CENTRO DE RETOS -->
     <section id="centro-retos" class="card">
       <h2>Centro de Retos</h2>
       <div id="retos" class="retos"></div>
-      <div class="nota">
-        Evidencia sugerida (temporal): enlace público a tu publicación o captura (URL).<br />
-        Añádela en el campo del reto y pulsa <em>“Marcar como realizado”</em>.
-      </div>
     </section>
 
-    <!-- GALERÍA COMUNITARIA (simple) -->
+    <!-- VALIDACIÓN POR CLAVE -->
+    <section class="card">
+      <h2>Validación de reto con clave</h2>
+      <div class="clave">
+        <input id="claveReto" type="text" placeholder="Ingresa la clave entregada por el verificador" />
+        <button id="validarClave" class="btn btn-secondary">Validar clave</button>
+      </div>
+      <p class="nota">Un verificador autorizado te entregará una clave única. Si es correcta, sumas puntos y avanzas de nivel.</p>
+    </section>
+
+    <!-- GALERÍA COMUNITARIA -->
     <section class="card">
       <h2>Galería comunitaria</h2>
       <div id="galeria" class="galeria"></div>
-      <p class="nota">*Muestra las últimas evidencias compartidas por participantes (URLs validadas localmente).</p>
+      <p class="nota">*Últimos logros validados en tu dispositivo.</p>
     </section>
   </main>
 

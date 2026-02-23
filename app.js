@@ -17,43 +17,19 @@ const BONUS_RACHA = 0.10; // +10% por racha semanal activa
 // Estado local
 // ===============================
 const state = {
-  perfil: {
-    nombre: '',
-    puntos: 0,
-    rachaSemanas: 0
-  },
-  leaderboard: [
-    { nombre: 'Ana', puntos: 260 },
-    { nombre: 'Luis', puntos: 520 },
-    { nombre: 'Camila', puntos: 940 },
-    { nombre: 'Juan', puntos: 1520 }
-  ],
-  evidencias: []
+  perfil: { nombre: '', puntos: 0, rachaSemanas: 0 },
+  leaderboard: [ { nombre: 'Ana', puntos: 260 }, { nombre: 'Luis', puntos: 520 }, { nombre: 'Camila', puntos: 940 }, { nombre: 'Juan', puntos: 1520 } ],
+  evidencias: [],
+  usedKeys: [] // evita reutilización de la misma clave por el mismo usuario
 };
 
-function guardarState(){
-  localStorage.setItem('ecc_state', JSON.stringify(state));
-}
-function cargarState(){
-  const raw = localStorage.getItem('ecc_state');
-  if(raw){
-    try {
-      const s = JSON.parse(raw);
-      Object.assign(state, s);
-    } catch(e){}
-  }
-}
+function guardarState(){ localStorage.setItem('ecc_state_keys', JSON.stringify(state)); }
+function cargarState(){ const raw = localStorage.getItem('ecc_state_keys'); if(raw){ try{ Object.assign(state, JSON.parse(raw)); }catch(e){} } }
 
 // ===============================
-// Utilidades de nivel
+// Utilidades
 // ===============================
-function nivelPorPuntos(p){
-  let current = LEVELS[0];
-  for(const lvl of LEVELS){
-    if(p >= lvl.min) current = lvl;
-  }
-  return current;
-}
+function nivelPorPuntos(p){ let current = LEVELS[0]; for(const lvl of LEVELS){ if(p >= lvl.min) current = lvl; } return current; }
 
 // ===============================
 // Render perfil
@@ -82,14 +58,11 @@ function renderLeaderboard(){
   const lb = document.getElementById('leaderboard');
   lb.innerHTML = '';
   const merged = [...state.leaderboard];
-
-  // incluir al usuario si tiene nombre
   if(state.perfil.nombre){
     const i = merged.findIndex(p => p.nombre === state.perfil.nombre);
     if(i >= 0){ merged[i].puntos = state.perfil.puntos; }
     else { merged.push({ nombre: state.perfil.nombre, puntos: state.perfil.puntos }); }
   }
-
   merged.sort((a,b)=> b.puntos - a.puntos);
   merged.slice(0, 20).forEach((p,i)=>{
     const li = document.createElement('li');
@@ -100,21 +73,18 @@ function renderLeaderboard(){
 }
 
 // ===============================
-// Render retos
+// Render retos (solo informativos en esta versión)
 // ===============================
 async function renderRetos(){
   const cont = document.getElementById('retos');
   cont.innerHTML = 'Cargando retos...';
-
   let retos = [];
-  try {
-    const res = await fetch('data/retos.json');
-    retos = await res.json();
-  } catch(e) {
+  try { const res = await fetch('data/retos.json'); retos = await res.json(); }
+  catch(e){
     retos = [
       { id:'R1', titulo:'Difusión diaria de evento', tipo:'diario',  puntos:PUNTOS.diario,  descripcion:'Comparte una historia o publicación del Ecosistema Creativo.' },
       { id:'R2', titulo:'Video semanal sobre iniciativa', tipo:'semanal', puntos:PUNTOS.semanal, descripcion:'Crea un Reel/TikTok/Short sobre una iniciativa del ecosistema.' },
-      { id:'R3', titulo:'Invitar a 3 nuevos participantes', tipo:'logro', puntos:PUNTOS.logro,  descripcion:'Suma 3 jóvenes al programa y sube evidencia.' }
+      { id:'R3', titulo:'Invitar a 3 nuevos participantes', tipo:'logro', puntos:PUNTOS.logro,  descripcion:'Suma 3 jóvenes al programa y presenta tu validación.' }
     ];
   }
 
@@ -126,41 +96,9 @@ async function renderRetos(){
       <h3>${r.titulo}</h3>
       <div class="tipo">Tipo: ${r.tipo.toUpperCase()} • <span class="puntos">+${r.puntos} pts</span></div>
       <p>${r.descripcion}</p>
-      <input type="url" placeholder="URL de evidencia (pública)" />
-      <button class="btn btn-secondary">Marcar como realizado</button>
     `;
-    const btn = card.querySelector('button');
-    const input = card.querySelector('input[type="url"]');
-    btn.addEventListener('click', () => completarReto(r, input.value.trim()));
     cont.appendChild(card);
   });
-}
-
-// ===============================
-// Completar reto
-// ===============================
-function completarReto(reto, url){
-  // validación simple de URL
-  if(!/^https?:\/\/.+/i.test(url)){
-    alert('Agrega una URL pública como evidencia.');
-    return;
-  }
-  // puntos + bonus por racha si aplica (para semanales y logros)
-  let puntos = reto.puntos;
-  if(reto.tipo !== 'diario' && state.perfil.rachaSemanas > 0){
-    puntos = Math.round(puntos * (1 + BONUS_RACHA));
-  }
-  state.perfil.puntos += puntos;
-  state.evidencias.unshift({ fecha: new Date().toISOString(), url, reto: reto.id, puntos });
-
-  // mantener pequeña la galería
-  state.evidencias = state.evidencias.slice(0, 24);
-
-  guardarState();
-  renderPerfil();
-  renderLeaderboard();
-  renderGaleria();
-  alert(`¡Listo! Sumaste ${puntos} pts por el reto ${reto.titulo}.`);
 }
 
 // ===============================
@@ -175,10 +113,59 @@ function renderGaleria(){
     d.innerHTML = `
       <div><strong>${new Date(ev.fecha).toLocaleString()}</strong></div>
       <div>Reto: ${ev.reto} • +${ev.puntos} pts</div>
-      <a href="${ev.url}" target="_blank" rel="noopener">Ver evidencia</a>
+      <div>${ev.meta || 'Validación manual'}</div>
     `;
     g.appendChild(d);
   });
+}
+
+// ===============================
+// Validación por clave (sin servidor)
+// ===============================
+async function validarClaveReto(){
+  const input = document.getElementById('claveReto');
+  const raw = (input.value || '').trim();
+  if(!raw){ alert('Ingresa una clave.'); return; }
+  const clave = raw.toUpperCase();
+
+  // Evitar reuso por el mismo usuario
+  if(state.usedKeys.includes(clave)){
+    alert('Esta clave ya fue utilizada en este dispositivo.');
+    input.value = '';
+    return;
+  }
+
+  // Cargar claves válidas
+  let keys = {};
+  try{
+    const res = await fetch('data/valid_keys.json?_=' + Date.now());
+    keys = await res.json();
+  }catch(e){ alert('No se pudo cargar el archivo de claves.'); return; }
+
+  const k = keys[clave];
+  if(!k){ alert('Clave no válida.'); return; }
+
+  // Determinar puntos y reto
+  const puntos = Number(k.puntos || 0);
+  const retoId = k.retoId || 'R?';
+  const meta = k.meta || '';
+
+  // Actualizar progreso local
+  let otorgados = puntos;
+  // bonus por racha a semanales/logro si lo deseas, aquí omitimos por ser validación manual
+
+  state.perfil.puntos += otorgados;
+  state.evidencias.unshift({ fecha: new Date().toISOString(), reto: retoId, puntos: otorgados, meta: meta });
+  state.evidencias = state.evidencias.slice(0, 24);
+  state.usedKeys.push(clave);
+
+  guardarState();
+  renderPerfil();
+  renderLeaderboard();
+  renderGaleria();
+
+  alert(`¡Validación exitosa! Clave aceptada. Sumaste ${otorgados} pts.`);
+  input.value = '';
 }
 
 // ===============================
@@ -187,12 +174,7 @@ function renderGaleria(){
 function initPerfil(){
   const nombreInput = document.getElementById('nombre');
   const guardarBtn = document.getElementById('guardarPerfil');
-  guardarBtn.addEventListener('click', ()=>{
-    state.perfil.nombre = (nombreInput.value || '').trim() || 'Anónimo';
-    guardarState();
-    renderPerfil();
-    renderLeaderboard();
-  });
+  guardarBtn.addEventListener('click', ()=>{ state.perfil.nombre = (nombreInput.value || '').trim() || 'Anónimo'; guardarState(); renderPerfil(); renderLeaderboard(); });
 }
 
 (function(){
@@ -202,4 +184,5 @@ function initPerfil(){
   renderLeaderboard();
   renderRetos();
   renderGaleria();
+  document.getElementById('validarClave').addEventListener('click', validarClaveReto);
 })();
